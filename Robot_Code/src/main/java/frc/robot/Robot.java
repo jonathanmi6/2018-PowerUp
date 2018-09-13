@@ -40,7 +40,7 @@ public class Robot extends IterativeRobot
 	double prevLeftEncoder = 0, prevRightEncoder = 0;
 
 	//Test Variables
-	boolean driveEncoders, driveCurrent, elevatorCurrent, elevatorEncoder, bannerSensor, currentState, wristEncoder, wristLimitSwitch, wristCurrent, intakeBanner;
+	boolean driveEncoders, driveCurrent, elevatorCurrent, elevatorEncoder, bannerSensor, currentState, wristEncoder, wristLimitSwitch, wristCurrent, intakeBanner, elevatorVelocity;
 
 	@Override
 	public void robotInit() 
@@ -73,12 +73,14 @@ public class Robot extends IterativeRobot
 		driveCurrent = false;
 		elevatorCurrent = false;
 		elevatorEncoder = false;
+		elevatorVelocity = true;
 		bannerSensor = false;
 		currentState = false;
 		wristEncoder = false;
 		wristLimitSwitch = false;
 		wristCurrent = false;
 		intakeBanner = false;
+
 	}
 	
 	@Override
@@ -255,6 +257,10 @@ public class Robot extends IterativeRobot
 		if(elevatorCurrent)
 		{
 			Elevator.testElevatorCurrent();
+		}
+		if(elevatorVelocity)
+		{
+			Elevator.testElevatorVelocity();
 		}
 		if(bannerSensor)
 		{
