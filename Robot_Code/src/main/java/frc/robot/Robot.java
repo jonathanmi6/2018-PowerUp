@@ -38,7 +38,6 @@ public class Robot extends IterativeRobot
 			joy = new Joysticks();
 			eleVader = new Elevator();
 			enc.resetEncoders();
-			navX.navXInitialize();
 			navX.resetAngle();
 			Elevator.resetElevatorEncoders();
 			Elevator.elevatorInitialization();
@@ -137,6 +136,7 @@ public class Robot extends IterativeRobot
 			runWrist();
 			Lights.runLights();
 			runTests();
+			navX.getAngle();
 		}
 		catch(Throwable t)
 		{
@@ -275,7 +275,7 @@ public class Robot extends IterativeRobot
 		}
 		if(navXAngle)
 		{
-			navX.getAngle();
+			navX.testAngle();
 		}
 	}
 }
