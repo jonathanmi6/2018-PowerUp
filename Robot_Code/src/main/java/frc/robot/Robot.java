@@ -1,9 +1,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.*;
-import frc.team3647elevator.*;
+import frc.team3647autos.Autonomous;
+import frc.team3647inputs.*;
 import frc.team3647pistons.*;
 import frc.team3647subsystems.*;
+import frc.team3647ConstantsAndFunctions.*;
 
 
 
@@ -37,8 +39,7 @@ public class Robot extends IterativeRobot
 			safetyChecker = new MotorSafetyHelper(safety);
 			joy = new Joysticks();
 			eleVader = new Elevator();
-			enc.resetEncoders();
-			navX.resetAngle();
+			navX = new NavX();
 			Elevator.resetElevatorEncoders();
 			Elevator.elevatorInitialization();
 			Drivetrain.drivetrainInitialization();
@@ -58,24 +59,22 @@ public class Robot extends IterativeRobot
 		driveEncoders = false;
 		driveCurrent = false;
 		elevatorCurrent = false;
-		elevatorEncoder = false;
+		elevatorEncoder = true;
 		bannerSensor = false;
 		currentState = false;
 		wristEncoder = false;
 		wristLimitSwitch = false;
 		wristCurrent = false;
 		intakeBanner = false;
-		navXAngle = true;
 	}
 	
 	@Override
 	public void autonomousInit() 
 	{
-		System.out.println(Autonomous.currentState);
 		try 
 		{
 			CrashChecker.logAutoInit();
-			Autonomous.initialize(enc);
+			Autonomous.initialize(enc, navX);
 		}
 		catch(Throwable t)
 		{
@@ -92,7 +91,7 @@ public class Robot extends IterativeRobot
 			Elevator.setElevatorEncoder();
 			Wrist.setLimitSwitch();
 			Wrist.setWristEncoder();
-			Autonomous.chezyDoubleSwitchRightFromRight(enc);
+			Lights.LightOutput(false, false, false);
 		}
 	}
 	
@@ -109,6 +108,7 @@ public class Robot extends IterativeRobot
 		Forks.lockTheForks();
 		Shifter.lowGear();
 		Lock.unlock();
+		Lights.LightOutput(false, false, false);
 		//Elevator.aimedElevatorState = 0;
 		Wrist.aimedWristState = 0;
 		stopWatch.stop();
@@ -136,7 +136,6 @@ public class Robot extends IterativeRobot
 			runWrist();
 			Lights.runLights();
 			runTests();
-			navX.getAngle();
 		}
 		catch(Throwable t)
 		{
@@ -150,8 +149,9 @@ public class Robot extends IterativeRobot
 	{
 		try 
 		{
-			Autonomous.initialize(enc);
+			Lights.runLights();
 			CrashChecker.logAutoInit();
+			navX.resetAngle();
 		}
 		catch(Throwable t)
 		{
@@ -165,6 +165,11 @@ public class Robot extends IterativeRobot
 	public void testPeriodic() 
 	{
 		updateJoysticks();
+		//runDrivetrain();
+		runElevator();
+		//runTests();
+		Elevator.testElevatorEncoders();
+		//System.out.println("NavX: " + navX.yaw);
 	}
 	
 	
@@ -176,7 +181,6 @@ public class Robot extends IterativeRobot
 	
 	public void runElevator()
 	{
-
 		Elevator.setElevatorEncoder();
 		if(Shifter.piston.get() == DoubleSolenoid.Value.kReverse)
 		{
@@ -185,7 +189,7 @@ public class Robot extends IterativeRobot
 		else
 		{
 			Elevator.setElevatorButtons(joy.buttonA1, joy.buttonB1,  joy.buttonY1, joy.buttonX1);
-			Elevator.setManualOverride(joy.rightJoySticky1 * .6);
+			Elevator.setManualOverride(joy.rightJoySticky1 * 1);
 			Elevator.runElevator();
 		}
 		//Elevator.climbPrep(joy.buttonB);
@@ -212,17 +216,18 @@ public class Robot extends IterativeRobot
 	
 	public void runDrivetrain()
 	{
+		navX.setAngle();
 		enc.setEncoderValues();
-		if(joy.leftBumper)
+		if(Elevator.elevatorEncoderValue > 30000)
 		{
-			//Drivetrain.arcadeDrive(enc.leftEncoderValue, enc.rightEncoderValue, joy.leftJoySticky * .6, joy.rightJoyStickx * .6);
+			Drivetrain.newArcadeDrive(joy.rightJoyStickx * Constants.driveElevatorSpeedModifier, joy.leftJoySticky * Constants.driveElevatorSpeedModifier, navX.yaw);
 		}
 		else
 		{
 			//Drivetrain.arcadeDrive(Encoders.leftEncoderValue, Encoders.rightEncoderValue, joy.leftJoySticky, joy.rightJoyStickx);
 			//Drivetrain.FRCarcadedrive(joy.leftJoySticky, joy.rightJoyStickx);
 			//Drivetrain.runMEATDrivetrain(joy.leftJoySticky, joy.rightJoyStickx);
-			Drivetrain.newArcadeDrive(joy.leftJoySticky, joy.rightJoyStickx);
+			Drivetrain.newArcadeDrive(joy.rightJoyStickx, joy.leftJoySticky, navX.yaw);
 		}
 	}
 	
@@ -272,10 +277,6 @@ public class Robot extends IterativeRobot
 		if(intakeBanner)
 		{
 			IntakeWheels.testBannerSensor();
-		}
-		if(navXAngle)
-		{
-			navX.testAngle();
 		}
 	}
 }

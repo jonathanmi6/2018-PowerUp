@@ -21,8 +21,9 @@ public class Constants
 	public final static double rDrivekP = .4;
 	public final static double rDrivekI = 0;
 	public final static double rDrivekD = 40;
-	public final static double velocityConstant = 1872;
-	
+	public final static double velocityConstant = 1550;
+
+	public final static double driveElevatorSpeedModifier = 0.5;
 	//Piston Pins
 	public final static int forksPinSourceA = 4;
 	public final static int forksPinSourceB = 5;
@@ -37,7 +38,8 @@ public class Constants
 	public final static int rightIntakePin = 56;
 	public final static int leftIntakePin = 55;
 	public final static int intakeBannerSensor = 8;
-	public final static double poopyShoot = 0.42;
+	//Intake Constants
+	public final static double poopyShoot = 0.38;
 	
 	//Elevator Pins
 	public final static int leftGearboxSRX = 52;
@@ -62,18 +64,18 @@ public class Constants
 	
 	// Elevator PID Values
 		//Motion Magic Values
-	public final static int elevatorCruiseVelocity = 0;
-	public final static int elevatorAcceleration = 0;
+	public final static int elevatorCruiseVelocity = 8000;
+	public final static int elevatorAcceleration = 20000;
 		//carriage only
 	public final static int carriagePID = 0;
-	public final static double carriageF = 0;
+	public final static double carriageF = 0.1705;
 	public final static double carriageP = 0.2;
 	public final static double carriageI = 0;
 	public final static double carriageD = 20;
 	public final static int carriageIZone = 0;
 		//interstage
 	public final static int interstagePID = 1;
-	public final static double interstageF = 0;
+	public final static double interstageF = 0.1705;
 	public final static double interstageP = 0.4;
 	public final static double interstageI = 0;
 	public final static double interstageD = 50;
@@ -123,5 +125,38 @@ public class Constants
 	public static final double lrandrrBackUpToWallTurnDist = 5400;
 	public static final double lrandrrBackUpToWallTurnRatio = 3.26;
 	public static final double lrStraightAfterWall = 	2928;
+
+		//Pathfinder Constants
+		public final static double wheelDiameter = .378*12;//.416666;
+		//Used for waypoint generation method
+	public final static double wheelBase = 25.2;
+	public final static double maxVelocity = 185.976; // also used for csv file method
+	public final static double maxAcceleration = 120;
+	public final static double maxJerk = 2400;
+	public final static double MPTimeStep = 0.02;
+		//PID Values
+	public final static double lPFkP = 0.05;//3048; //0.19; //P Gain
+	public final static double lPFkI = 0; //I Gain (not used)
+	public final static double lPFkD = 0; //D Gain
+	public final static double lPFkV = 1 / maxVelocity ; //Feed Forward (1/max velocity)
+	public final static double lPFkA = 0; //Acceleration Gain
+	public final static double rPFkP = 0.05;//3048; //0.19; //P Gain
+	public final static double rPFkI = 0; //I Gain (not used)
+	public final static double rPFkD = 0; //D Gain
+	public final static double rPFkV = 1 / maxVelocity ; //Feed Forward(1/max velocity)
+	public final static double rPFkA = 0; //Acceleration Gain
+		//turn code constants
+	public final static double turnkP = 0;
+	public final static double turnkI = 0;
+	public final static double turnkD = 0;
+	public final static double turnkF = 0;
+
+
+	//Auto Constants
+	public final static double shootCubeTime = 0.5;
+	public final static double elevatorTimeout = 1;
+	public final static double autoIntakeSpeed = 1;
+	public final static double autoShootSpeed = -1;
+	public final static double scaleAutoElevatorUpDistance = 19800; //18ft * 12in * 1440 / (5in * 3.14)
 
 }
